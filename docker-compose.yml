@@ -14,17 +14,19 @@ services:
 
   backend:
     build: ./backend
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    command: sh -c "python -m app.migrate && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
     volumes:
       - ./backend:/code
+      - flowdesk_uploads:/code/uploads
     ports:
       - '8000:8000'
     environment:
-      DATABASE_URL: postgresql://flowdesk:flowdesk@db:5432/flowdesk
-      SECRET_KEY: Nt674d@jiuyh6#5492$iskf&333n#17
+      DATABASE_URL: postgresql+psycopg2://flowdesk:flowdesk@db:5432/flowdesk
+      SECRET_KEY: change-this-long-random-text
     depends_on:
       db:
         condition: service_healthy
 
 volumes:
   dbdata:
+  flowdesk_uploads:
