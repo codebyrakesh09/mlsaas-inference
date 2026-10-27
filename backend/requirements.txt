@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+psycopg2-binary
+pydantic[email]
+pyjwt
+bcrypt
+python-multipart
+pytest
+httpx

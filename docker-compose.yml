@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: flowdesk
+      POSTGRES_PASSWORD: flowdesk
+      POSTGRES_DB: flowdesk
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U flowdesk']
+      interval: 3s
+      retries: 10
+
+  backend:
+    build: ./backend
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./backend:/code
+    ports:
+      - '8000:8000'
+    environment:
+      DATABASE_URL: postgresql://flowdesk:flowdesk@db:5432/flowdesk
+      SECRET_KEY: Nt674d@jiuyh6#5492$iskf&333n#17
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  dbdata:
